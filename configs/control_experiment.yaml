@@ -1,0 +1,65 @@
+# Configurazione OBBLIGATORIA per esperimento controllo (Fase 1)
+# Questo test decide se l'idea ha senso o no
+
+# Modelli
+teacher_model: "Qwen/Qwen3-30B-A3B-AWQ"
+reasoner_model: "Qwen/Qwen3-30B-A3B-AWQ"  # STESSO del teacher
+reasoner_mode: "teacher_control"  # OBBLIGATORIO
+teacher_vllm_url: "http://localhost:8000/v1"
+
+# Contesto: 16k o 32k max
+teacher_ctx: 32000
+reasoner_ctx: 32000
+chunk_size_tokens: 8000  # Chunk 8k
+chunk_overlap_tokens: 512
+
+# Compressore
+n_latents: 4096  # NON di più, NON di meno
+d_lat: 512
+use_global_resampler: false  # NO global resampler
+n_compressor_blocks: 2
+n_heads: 8
+ff_dim: 2048
+
+# Multi-layer (Fase 2)
+teacher_layers: [-6, -18, -30]
+num_time_buckets: 8
+
+# Training
+train:
+  lr: 2e-4
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  max_steps: 1000  # Ridotto per test rapido
+  max_answer_tokens: 64
+  warmup_steps: 50
+  save_steps: 200
+  eval_steps: 100
+  checkpoint_dir: "runs/control_experiment"
+  auxiliary_loss_type: "alignment"
+  auxiliary_weight: 0.1
+
+# Eval
+eval:
+  temperature: 0.0
+  max_new_tokens: 64
+  top_p: 1.0
+
+# Dataset: solo needle + versioning
+data:
+  train_size: 500  # Ridotto per test
+  val_size: 50
+  test_size: 100
+  num_keys: 200
+  noise_ratio: 0.90
+  min_context_tokens: 16000
+  max_context_tokens: 32000
+  # Solo needle e versioning, NO multi-hop per ora
+  enable_multi_hop: false
+
+# Paths
+paths:
+  data_dir: "data"
+  output_dir: "outputs/control_experiment"
+  cache_dir: ".cache/control"
+

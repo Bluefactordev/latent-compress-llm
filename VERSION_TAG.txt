@@ -1,0 +1,13 @@
+v2_control_ready
+Data: 2025-01-XX
+Status: Fasi 1-5 implementate, pronto per esperimento controllo
+
+Modifiche principali:
+- Fase 1: reasoner_mode teacher_control
+- Fase 2: Multi-layer extraction [-6, -18, -30]
+- Fase 3: Temporal inductive bias (time-bucket embeddings)
+- Fase 4: Proiezione latents → reasoner space
+- Fase 5: Training strategy (freeze policy, auxiliary loss)
+
+NON MODIFICARE ARCHITETTURA PRIMA DI COMPLETARE ESPERIMENTO CONTROLLO
+

@@ -1,0 +1,68 @@
+# Configurazione base per compressione latente
+
+teacher_model: "Qwen/Qwen3-30B-A3B-AWQ"  # Teacher su vLLM porta 8000
+reasoner_model: "Qwen/Qwen2.5-7B-Instruct"  # Reasoner più piccolo (usato solo in transfer mode)
+reasoner_mode: "teacher_control"  # "teacher_control" o "transfer"
+teacher_vllm_url: "http://localhost:8000/v1"
+
+# Contesto
+teacher_ctx: 262000
+reasoner_ctx: 64000
+chunk_size_tokens: 64000
+chunk_overlap_tokens: 1024
+
+# Compressore
+n_latents: 4096
+d_lat: 512
+n_latents_global: 8192
+use_global_resampler: true
+n_compressor_blocks: 2
+n_heads: 8
+ff_dim: 2048
+
+# Layer per hidden states (Fase 2: multi-layer)
+teacher_layers: [-6, -18, -30]
+num_time_buckets: 8  # Fase 3: temporal inductive bias
+
+# Training
+train:
+  lr: 2e-4
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  max_steps: 2000
+  max_answer_tokens: 64
+  warmup_steps: 100
+  save_steps: 500
+  eval_steps: 200
+  checkpoint_dir: "runs"
+  auxiliary_loss_type: "alignment"  # "localization" o "alignment"
+  auxiliary_weight: 0.1
+
+# Eval
+eval:
+  temperature: 0.0
+  max_new_tokens: 64
+  top_p: 1.0
+
+# Baseline
+baselines:
+  rag_k: [8, 16]
+  summary_tokens_per_chunk: 512
+  rag_chunk_size: 2048
+
+# Dataset
+data:
+  train_size: 2000
+  val_size: 200
+  test_size: 500
+  num_keys: 500
+  noise_ratio: 0.90
+  min_context_tokens: 16000
+  max_context_tokens: 262000
+
+# Paths
+paths:
+  data_dir: "data"
+  output_dir: "outputs"
+  cache_dir: ".cache"
+

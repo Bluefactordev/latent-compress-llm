@@ -1,0 +1,36 @@
+# Griglia esperimenti
+
+experiments:
+  S0:
+    name: "sanity_check"
+    context_tokens: 32000
+    n_latents: 1024
+    use_global_resampler: false
+    train:
+      max_steps: 2000
+  
+  S1_4096:
+    name: "main_4096"
+    context_tokens: 256000
+    n_latents: 4096
+    use_global_resampler: true
+    train:
+      max_steps: 5000
+  
+  S1_8192:
+    name: "main_8192"
+    context_tokens: 256000
+    n_latents: 8192
+    use_global_resampler: true
+    train:
+      max_steps: 5000
+  
+  S1_1024:
+    name: "main_1024"
+    context_tokens: 256000
+    n_latents: 1024
+    use_global_resampler: true
+    train:
+      max_steps: 5000
+
+
