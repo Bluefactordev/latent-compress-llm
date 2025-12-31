@@ -1,22 +1,22 @@
 # Latent Compression for Long-Context LLM
 
-Sistema di compressione latente per contesti molto lunghi (fino a ~262k token) utilizzando un modello Reader/Teacher (Qwen3 30B MoE AWQ) e un Reasoner più piccolo (Qwen3 4B).
+Latent compression system for very long contexts (up to ~262k tokens) using a Reader/Teacher model (Qwen3 30B MoE AWQ) and a smaller Reasoner (Qwen3 4B).
 
-## Architettura
+## Architecture
 
-1. **Reader/Teacher**: Qwen3 30B MoE AWQ 4bit legge il contesto completo (fino a 262k token)
-2. **Compressore**: Resampler stile Perceiver che comprime il contesto in sequenze di token latenti molto più corte
-3. **Reasoner**: Qwen3 4B consuma solo (latenti + domanda) per generare la risposta
+1. **Reader/Teacher**: Qwen3 30B MoE AWQ 4bit reads the full context (up to 262k tokens)
+2. **Compressor**: Perceiver-style resampler that compresses the context into much shorter latent token sequences
+3. **Reasoner**: Qwen3 4B consumes only (latents + question) to generate the answer
 
-## Struttura
+## Structure
 
 ```
 latent-compress-llm/
-  configs/          # Configurazioni YAML
-  data/             # Dataset e cache
-  src/              # Codice sorgente
-  runs/             # Checkpoint training
-  outputs/          # Report e plot
+  configs/          # YAML configurations
+  data/             # Datasets and cache
+  src/              # Source code
+  runs/             # Training checkpoints
+  outputs/          # Reports and plots
 ```
 
 ## Setup
@@ -25,43 +25,43 @@ latent-compress-llm/
 pip install -r requirements.txt
 ```
 
-## Utilizzo
+## Usage
 
-### 1. Generare dataset sintetico
+### 1. Generate synthetic dataset
 
 ```bash
 python -m src.data.generate_synth --config configs/base.yaml
 ```
 
-### 2. Training compressore
+### 2. Train compressor
 
 ```bash
 python -m src.train.train_compressor --config configs/base.yaml --exp S0
 ```
 
-### 3. Valutazione
+### 3. Evaluation
 
 ```bash
 python -m src.eval.run_eval --config configs/base.yaml --exp S0
 python -m src.eval.report --input outputs/report.json
 ```
 
-## Esperimenti
+## Experiments
 
-- **S0**: Sanity check - contesto 32k, N_lat 1024
-- **S1**: Main - contesto 256k, N_lat {8192, 4096, 1024}
+- **S0**: Sanity check - 32k context, N_lat 1024
+- **S1**: Main - 256k context, N_lat {8192, 4096, 1024}
 
-## Baseline
+## Baselines
 
 1. Teacher full context (vLLM)
 2. RAG top-k chunks
 3. Summary per chunk
 4. Pooling latents (mean/max)
 
-## Assunzioni
+## Assumptions
 
-- Teacher disponibile su vLLM porta 8000
-- Se estrazione hidden states fallisce con AWQ, si usa fallback logits-only o proxy model
-- Reasoner usa Transformers per supportare inputs_embeds
+- Teacher available on vLLM port 8000
+- If hidden states extraction fails with AWQ, fallback to logits-only or proxy model
+- Reasoner uses Transformers to support inputs_embeds
 
 
